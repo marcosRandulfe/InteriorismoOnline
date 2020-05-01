@@ -1,0 +1,11 @@
+{
+    "name": "vendor/carpinteria-online",
+    "description": "Description of project carpinteria_online.",
+    "authors": [
+        {
+            "name": "marcos",
+            "email": "your@email.here"
+        }
+    ],
+    "require": {}
+}
