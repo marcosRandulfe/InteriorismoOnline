@@ -18,6 +18,14 @@ class Bd
     private const PISO ="piso";
     private const NUM_TARJ="num_tarjeta";
 
+    private function comprobarError($resultado){
+        if ($resultado==true) {
+            echo "Inserción realizada con éxito";
+        } else {
+            echo "Error: ".$this->db->error;
+        }
+   }
+
     public function __construct()
     {
         $this->db= mysqli_connect(Bd::host, Bd::user, Bd::passwd, Bd::name);
@@ -26,7 +34,7 @@ class Bd
         }
         $this->db->set_charset('utf-8');
     }
-    
+
     /**
         *
         * @param type $usuario
@@ -55,7 +63,7 @@ class Bd
         }
         return false;
     }
-  
+
     /**
       *
       * @param type Usuario
@@ -65,26 +73,22 @@ class Bd
     public function crearUsuario($usuario)
     {
         /* @var $usuario Usuario*/
+        $sql ="INSERT INTO usuarios (nombre,passwd) VALUES('".$usuario->getNombre()."','".$usuario->getPasswd()."')";
+        $this->comprobarError($this->db->query($sql));
         $sql =
-      "INSERT INTO usuarios VALUES('".$usuario->getDni()."','".
-          $usuario->getPasswd()."','".
-          $usuario->getNombre()."','".
-          $usuario->getApellidos()."','".
-          $usuario->getCalle()."','".
-          $usuario->getNumero()."','".
-          $usuario->getPiso()."','".
-          $usuario->getNum_tarjeta()."')";
-        //$sql = $this->db->real_escape_string($sql);
-        echo $sql;
-        if ($this->db->query($sql)==true) {
-            echo "Inserción realizada con éxito";
-        } else {
-            echo "Error: ".$this->db->error;
-        }
+        "INSERT INTO clientes VALUES('".
+            $this->db->insert_id."','".
+            $usuario->getDni()."','".
+            $usuario->getNombre()." ".$usuario->getApellidos()."','".
+            $usuario->getCalle()."','".
+            $usuario->getNumero()."','".
+            $usuario->getPiso()."','".
+            $usuario->getNum_tarjeta()."')";
+          echo "<br/>$sql<br/>";
+          $this->comprobarError($this->db->query($sql));
     }
-    
-    public function getPedidos()
-    {
+
+    public function getPedidos(){
         require_once('pedido.php');
         $pedidos =[];
         /*@var $resultado  msqli_result */
@@ -103,7 +107,7 @@ class Bd
         }
         return $pedidos;
     }
-    
+
     public function crearPedidos($pedido)
     {
         /* @var $pedido pedido*/
@@ -135,18 +139,18 @@ class Bd
          *
          */
         $this->db->query($query);
-        
+
         /*  if ($this->db->errno) {
               echo $this->db->error;
           }*/
     }
-    
+
     public function close()
     {
         $this->db->close();
     }
   /*
-   * 
+   *
    */
    public function comprobarNombreUsuario($nombre){
        $sql =$this->db->real_escape_string('SELECT nombre FROM USUARIOS WHERE nombre= '.$nombre);
@@ -156,7 +160,8 @@ class Bd
        }
        return false;
    }
-    
-    
-    
+
+
+
+
 }
