@@ -1,10 +1,10 @@
-DROP DATABASE CARPINTERIA;
+DROP DATABASE IF EXISTS CARPINTERIA;
 CREATE DATABASE IF NOT EXISTS CARPINTERIA;
 USE CARPINTERIA;
 
 CREATE TABLE usuarios(
         id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-        nombre VARCHAR(20),
+        nombre VARCHAR(20) UNIQUE,
         passwd VARCHAR(20),
         CONSTRAINT U_USUARIOS UNIQUE(nombre,passwd)
 );
@@ -16,8 +16,6 @@ CREATE TABLE clientes(
         calle VARCHAR(20),
         numero INT,
         piso CHAR,
-        num_tarjeta VARCHAR(20),
-        tipo_usuario VARCHAR(20),
         CONSTRAINT FK_CLIENTE_USUARIO FOREIGN KEY (id) REFERENCES usuarios(id)
 );
 
@@ -43,22 +41,26 @@ CREATE TABLE pedidos(
         desing_state BOOLEAN,
         factory_state BOOLEAN,
         ruta_modelo VARCHAR(30),
-        CONSTRAINT FK_PEDIDOS_CLIENTES FOREIGN KEY (id_usuario) REFERENCES clientes(id),
-        CONSTRAINT FK_PEDIDOS_PRODUCTORES FOREIGN KEY (id_usuario) REFERENCES productores(id)
+        precio decimal(15,2),
+        CONSTRAINT FK_PEDIDOS_CLIENTES FOREIGN KEY (id_usuario) REFERENCES clientes(id)
 );
 
-CREATE TABLE modelo_3d(
-        num_pedido INTEGER,
-        version INTEGER,
-        ruta_modelo VARCHAR(50),
-        CONSTRAINT pk_modelo_3d PRIMARY KEY(num_pedido,version),
-        CONSTRAINT fk_modelo_3d FOREIGN KEY(num_pedido) REFERENCES pedidos(num_pedido)
-);
+/*CONSTRAINT FK_PEDIDOS_PRODUCTORES FOREIGN KEY (id_usuario) REFERENCES productores(id)*/
 
 CREATE TABLE fotos_cliente(
         num_pedido INTEGER,
-        num_foto INTEGER,
+        num_foto INTEGER AUTO_INCREMENT UNIQUE,
         url_foto VARCHAR(30),
         CONSTRAINT pk_fotos_clientes PRIMARY KEY(num_pedido,num_foto),
         CONSTRAINT fk_fotos_clientes FOREIGN KEY(num_pedido) REFERENCES pedidos(num_pedido)
 );
+
+
+INSERT INTO usuarios VALUES(-1,'producer','producer');
+INSERT INTO productores VALUES(-1,'xxxxx','varlovento 6');
+INSERT INTO usuarios VALUES(1,'admin','admin');
+INSERT INTO admins VALUES(1,'general_admin');
+INSERT INTO usuarios VALUES(2,'producer_admin','producer_admin');
+INSERT INTO admins VALUES(2,'producer_admin');
+INSERT INTO usuarios VALUES(3,'user_admin','user_admin');
+INSERT INTO admins VALUES(3,'user_admin');

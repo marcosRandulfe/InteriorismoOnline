@@ -1,53 +1,47 @@
 <?php
 session_start();
 if (isset($_POST['dni'])
-         and isset($_POST['nombre'])
-         and isset($_POST['apellidos'])
+         and isset($_POST['alias'])
+         and isset($_POST['nombre_completo'])
          and isset($_POST['calle'])
          and isset($_POST['numero'])
          and isset($_POST['piso'])) {
-    if (isset($_POST['num_tarjeta'])) {
-        $num_tarjeta= $_POST['num_tarjeta'];
-    } else {
-        $num_tarjeta="-1";
-    }
-    require_once 'usuario.php';
+    
+    require_once 'Cliente.php';
     require_once 'bd.php';
-    /*@var $usuario Usuario*/
 
-    $usuario= new Usuario(
-        $_POST['dni'],
+    $usuario= new Cliente(
+            -1,
+        $_POST['alias'],
         $_POST['passwd'],
-        $_POST['nombre'],
-        $_POST['apellidos'],
+        $_POST['dni'],
+        $_POST['nombre_completo'],
         $_POST['calle'],
         $_POST['numero'],
-        $_POST['piso'],
-        $num_tarjeta
+        $_POST['piso']
       );
     if ($usuario->valido()) {
-        var_dump($usuario);
+        error_log("Usuario válido: ".var_export($usuario,true));
+        $bd = new Bd();
+        $usuario=$bd->crearCliente($usuario);
+        $_SESSION['user']= serialize($usuario);
+        header("Location: pagina_usuario.php");
+       error_log("Sesión usuario".$_SESSION['user']);
     } else {
-        echo  "usuario invalido";
+        error_log("usuario invalido");
+        $formularioIncorrecto=true;
     }
 
-    $bd = new Bd();
-    $bd->crearUsuario($usuario);
-    $_SESSION['user']= json_encode($usuario);
-    header('Location: ./pagina_usuario.php');
-} else {
-    if (isset($_POST['dni']) or isset($_POST['nombre']) or isset($_POST['apellidos']) or isset($_POST['calle']) or isset($_POST['numero']) or isset($_POST['piso'])) {
+    
+}
+    if (isset($_POST['dni']) or isset($_POST['alias']) or isset($_POST['nombre_completo']) or isset($_POST['calle']) or isset($_POST['numero']) or isset($_POST['piso'])) {
         $formularioIncorrecto=true;
     }
     readfile('header.html');
-    echo <<<HTML
-<body>
-  <nav class="navbar navbar-light bg-light static-top">
-    <div>
-      <a class="navbar-brand" href="#">Carpinteria online</a>
-    </div>
-  </nav>
-HTML;
+    echo <<<EOF
+        <section class="hero map alto">
+EOF;
+    require_once('./menu/menu.php');
     if (isset($formularioIncorrecto) and $formularioIncorrecto==true) {
         echo <<<HTML
   <div class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -58,58 +52,65 @@ HTML;
 </div>
 HTML;
     }
-    echo <<<HTML
-  <main class="container seccion">
-  <section class="row">
 
-   <div id="logo" class="col-sm">
-         <h1>Formulario de registro</h1>
-   </div>
-   <div id="formulario" class="col-sm">
-  <form class="form container" name="singup" action="singup.php" method="post">
-    <div class="form-group">
-      <label for="dni">DNI</label>
-    <input class="form-control form-control-sm" type="text" id="dni" name="dni" placeholder="Ej.: 33838338a"/>
+echo <<<HTML
+<div class="hero-background">
+      <div class="row">
+        <div class="columns small-12 medium-6">
+      </div>
+<div class="columns small-12 medium-6 ">
+<div class="translucent-form-overlay">
+  <form method="post" action="#">
+    <h3>Crear cuenta</h3>
+    <div class="row">
+      <label class="columns">Alias usuario
+        <input type="text" name="alias" placeholder="Alias"/>
+      </label>
     </div>
     <div class="row">
-        <div class="form-group col">
-            <label for="passwd">Contraseña</label>
-            <input class="form-control form-control-sm" type="password" id="passwd" name="passwd" />
+      <label class="columns">Nombre y apellidos
+        <input type="text" name="nombre_completo" placeholder="Nombre completo"/>
+      </label>
+    </div>
+    <div class="row">
+        <div class="columns large-6 small-12">
+            <label>Contraseña
+                <input type="password" name="passwd" placeholder="Contraseña"/>
+            </label>
         </div>
-        <div class="form-group col">
-            <label for="passwd_check">Repita contraseña</label>
-            <input class="form-control form-control-sm" type="text" id="confirm" name="confirm"/>
+        <div class="columns large-6 small-12">
+            <label>Repita contraseña
+                <input type="password" name="passwd_check" placeholder="Repita Contraseña"/>
+            </label>
         </div>
     </div>
     <div class="row">
-    <div class="form-group col">
-      <label for="nombre">Nombre</label>
-    <input class="form-control form-control-sm" type="text" id="nombre" name="nombre" placeholder="Introduzca su nombre"/>
+      <label class="columns">DNI
+        <input type="text" name="dni" pattern="\d{8}\w" placeholder="EJ: 00000000A"/>
+      </label>
     </div>
-    <div class="form-group col">
-      <label for="apellidos">Apellidos</label>
-      <input type="text" class="form-control form-control-sm" name="apellidos" id="apellidos"/>
+    <div class="row medium-unstack">
+            <label class="columns">Calle
+                <input type="text" name="calle"/>
+            </label>
+            <label class="columns">Número
+                <input type="text" name="numero" />
+            </label>
+            <label class="columns">Piso
+                <input type="text" name="piso"/>
+            </label>
     </div>
-  </div>
-  <div class="row">
-    <div class="form-group col">
-      <label for="calle">Calle</label>
-      <input type="text" id="calle" class="form-control form-control-sm"  name="calle"/>
+    <div class="row">
+        <div class="columns">
+            <button type="submit" class="columns primary button expanded">
+            Registrarse
+            </button>
+        </div>
     </div>
-    <div class="form-group col">
-        <label for="numero">Número</label>
-        <input type="number" id="numero" class="form-control form-control-sm"  name="numero"/>
-    </div>
-    <div class="form-group col">
-        <label for="piso">Piso</label>
-        <input type="text" id="piso"  name="piso" class="form-control form-control-sm"/>
-    </div>
-  </div>
-      <button class="btn btn-primary btn-lg btn-block" type="submit">Registro</button>
-  </form>
-  </div>
+ </form>
+</div>
+</div>
+<div class="shadow"></div>
 </section>
-</main>
 HTML;
-}
 readfile('footer.html');

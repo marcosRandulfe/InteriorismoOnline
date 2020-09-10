@@ -1,18 +1,15 @@
 <?php
-// Meter proteccion contra el robo de sesiones y cookies
 session_start();
 if (isset($_SESSION['user'])) {
-    //header('Location:http://a18marcosrg/carpinteria_online/pagina_usuario.php');
     header("Location: pagina_usuario.php");
-  }
+}
 $mensaje="";
 if (isset($_POST['user']) or isset($_POST['passwd'])) {
     if (isset($_POST['user']) and isset($_POST['passwd'])) {
         require_once 'bd.php';
-        /* @var $bd Bd */
         $bd = new Bd();
         $resultado=$bd->validUser($_POST['user'], $_POST['passwd']);
-        var_dump($resultado);
+        error_log("VarDump usuario valido".var_export($resultado,true));
         if ($resultado != false) {
             $_SESSION['user']= serialize($resultado);
             $_SESSION['nombre']=$resultado->getNombre();
@@ -25,38 +22,49 @@ if (isset($_POST['user']) or isset($_POST['passwd'])) {
     }
 }
 readfile('header.html');
-//readfile('menu/menu.html');
-
+echo <<<EOF
+<section class="hero map">
+EOF;
+require_once('./menu/menu.php');
 if ($mensaje!="") {
   echo <<<HTML
-    <div class="alert alert-primary alert-dismissible fade show" role="alert">
-      <strong>Error! </strong>$mensaje
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
+    <div data-alert class="alert-box">
+        $mensaje
+      <a href="#" class="close">&times;</a>
     </div>
 HTML;
 }
 echo <<<HTML
-  <main class="container">
-    <section class="row">
-      <h1>Iniciar sesión:</h1>
-      <div id="logo" class="col-sm">
-      </div>
-      <div class="col-sm">
-      <form class="form" action="login.php" method="post">
-        <div class="form-group">
-          <label for="user" class="control-label">Usuario</label>
-          <input type="text" class="form-control" placeholder="Nombre de usuario" name="user" id="user"/>
+<!-- Formulario nuevo -->
+<div class="hero-background">
+      <div class="row">
+        <div class="columns small-12 medium-8">
         </div>
-        <div class="form-group">
-          <label for="passwd" class="control-label" >Contraseña</label>
-          <input type="password" name="passwd" id="passwd" class="form-control"/>
+        <div class="columns small-12 medium-4">
+          <div class="translucent-form-overlay">
+            <form action="#" method="post">
+              <h3>Log in</h3>
+              <div class="row columns">
+                <label>Usuario
+                  <input type="text" name="user" placeholder="Nombre">
+                </label>
+              </div>
+              <div class="row columns">
+                <label>Contraseña
+                  <input type="password" name="passwd" placeholder="Password">
+                </label>
+              </div>
+              <button type="submit" class="primary button expanded search-button">
+                Iniciar sesión
+              </button>
+           </form>
+          </div>
         </div>
-        <button class="btn btn-primary btn-block" type="submit">Entrar</button>
-      </form>
       </div>
-    </section>
-   </main>
-</body>
+    </div>
+  <div class="shadow"></div>
+</section>
 HTML;
+readfile('footer.html');
+?>
+

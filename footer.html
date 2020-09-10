@@ -1,12 +1,11 @@
 <!--  Start Footer Section  -->
 <footer>
   <div class="row">
-
     <!--    Start Copyrights    -->
     <div class="small-12 medium-4 large-4 columns">
       <div class="copyrights">
         <a class="logo" href="#">
-          <h1>CARPINTERIA<span class="tld">online</span></h1>
+          <h1>INTERIORISMO<span class="tld">online</span></h1>
         </a>
         <p>Copyright © 2020-2021 Marcos Randulfe.</p>
       </div>
@@ -28,37 +27,65 @@
             <p>+34 682 29 67 28</p>
           </div>
 
+        </div>
       </div>
     </div>
-
   </div>
 </footer>
+<!--    Start Back To Top    -->
+<a href="#" class="btn_fancy" id="back_top">
+  <div class="solid_layer"></div>
+  <div class="border_layer"></div>
+  <div class="text_layer"><img src="./dist/assets/img/top_arrow.png" alt="Back to top" title="" class="top_arrow"></div>
+</a>
+<!--    End Back To Top    -->
 
-
-  <!--    Start Back To Top    -->
-      <a href="#" class="btn_fancy" id="back_top">
-        <div class="solid_layer"></div>
-        <div class="border_layer"></div>
-        <div class="text_layer"><img src="img/top_arrow.png" alt="Back to top" title="" class="top_arrow"></div>
-      </a>
-   <!--    End Back To Top    -->
-
-   <!--    Javascript Files    -->
-   <!-- <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script> -->
-    <script type="text/javascript" src="js/jquery.js"></script>
-    <script type="text/javascript" src="js/touchSwipe.min.js"></script>
+<!--    Javascript Files    -->
+<!-- <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script> -->
+ <script type="text/javascript" src="src/assets/js/jquery.js"></script>
+<!--    <script type="text/javascript" src="js/touchSwipe.min.js"></script>
     <script type="text/javascript" src="js/easing.js"></script>
     <script type="text/javascript" src="js/foundation.min.js"></script>
     <script type="text/javascript" src="js/foundation/foundation.topbar.js"></script>
     <script type="text/javascript" src="js/carouFredSel.js"></script>
     <script type="text/javascript" src="js/scrollTo.js"></script>
     <script type="text/javascript" src="js/main.js"></script>
-	  <script type="text/javascript">
-		  $(()=>{
-		    $('#singup').click((e)=>{
-		        window.location.href='./singup.php';
-		      });
-		      });
-	  </script>
+    -->
+<script type="text/javascript" src="./dist/assets/js/app.js"></script>
+<script type="text/javascript">
+/*  console.log($);*/
+  $(() => {
+    $('#singup').click((e) => {
+      window.location.href = './singup.php';
+    });
+    
+        // Multiple images preview in browser
+    var imagesPreview = function(input, placeToInsertImagePreview) {
+
+        if (input.files) {
+            var filesAmount = input.files.length;
+
+            for (i = 0; i < filesAmount; i++) {
+                var reader = new FileReader();
+
+                reader.onload = function(event) {
+                    $($.parseHTML('<img>')).attr('src', event.target.result).appendTo(placeToInsertImagePreview);
+                }
+
+                reader.readAsDataURL(input.files[i]);
+            }
+        }
+
+    };
+
+    $('#fileUpload').on('change', function() {
+        imagesPreview(this, '#imagenes');
+    });
+    
+    
+  });
+  
+</script>
 </body>
+
 </html>
