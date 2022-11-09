@@ -1,4 +1,4 @@
-# Fichero explicativo de despliege
+# Fichero de despliege
 
 La aplicación  funcionara colocandola en el directorio htdocs del xampp
  
