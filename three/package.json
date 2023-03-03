@@ -75,7 +75,7 @@
     "@typescript-eslint/eslint-plugin": "^1.9.0",
     "typescript": "^3.4.5",
     "google-closure-compiler": "20190415.0.0",
-    "http-server": "^0.11.1",
+    "http-server": "^14.1.1",
     "qunit": "^2.9.2",
     "rollup": "^1.10.1"
   },
